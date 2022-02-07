@@ -1,5 +1,5 @@
 from datetime import date
-from src.manipulation.domain.model import Product, Purchase
+from src.manipulation.domain.model import Product, Purchase, Keyword
 
 
 def create_product_and_purchase(
@@ -40,8 +40,27 @@ def test_allocating_to_a_product_increases_only_totals():
     assert product.year_quantity == 0
 
 
+def test_allocating_different_keywords_to_same_product():
+    product, _ = create_product_and_purchase()
+    first_keyword = Keyword('apple', 'bannana')
+    second_keyword = Keyword('apple')
+    product.allocate_keys(first_keyword)
+    product.allocate_keys(second_keyword)
+    keys = [k for k in product._keywords]
+    assert len(product._keywords) == 2
+    
+
 def test_allocation_is_idempotent():
     product, purchase = create_product_and_purchase()
     product.allocate(purchase)
     product.allocate(purchase)
     assert product.total_amount == 1543
+
+
+def test_allocate_keys_is_idempotent():
+    product, _ = create_product_and_purchase()
+    keys = Keyword('main_keyword', 'seconday_keyword')
+    product.allocate_keys(keys)
+    product.allocate_keys(keys)
+    assert len(product._keywords) == 1
+    
