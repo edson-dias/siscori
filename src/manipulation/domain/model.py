@@ -54,7 +54,7 @@ class Product:
     def __str__(self):
         return f'{self.name}: {self.brand}'
 
-    def __eq__(self):
+    def __eq__(self, other):
         if not isinstance(other, Product):
             return False
         return other.reference == self.reference
